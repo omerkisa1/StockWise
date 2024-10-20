@@ -40,6 +40,8 @@
             this.companyBox = new System.Windows.Forms.TextBox();
             this.registerButton = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.usernameBox = new System.Windows.Forms.TextBox();
+            this.usernameLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,7 +55,7 @@
             // mailLabel
             // 
             this.mailLabel.AutoSize = true;
-            this.mailLabel.Location = new System.Drawing.Point(430, 93);
+            this.mailLabel.Location = new System.Drawing.Point(436, 93);
             this.mailLabel.Name = "mailLabel";
             this.mailLabel.Size = new System.Drawing.Size(67, 17);
             this.mailLabel.TabIndex = 1;
@@ -62,7 +64,7 @@
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(430, 130);
+            this.passwordLabel.Location = new System.Drawing.Point(430, 172);
             this.passwordLabel.Name = "passwordLabel";
             this.passwordLabel.Size = new System.Drawing.Size(73, 17);
             this.passwordLabel.TabIndex = 2;
@@ -71,7 +73,7 @@
             // 
             // passwordBox
             // 
-            this.passwordBox.Location = new System.Drawing.Point(527, 130);
+            this.passwordBox.Location = new System.Drawing.Point(527, 172);
             this.passwordBox.Name = "passwordBox";
             this.passwordBox.Size = new System.Drawing.Size(100, 22);
             this.passwordBox.TabIndex = 3;
@@ -79,7 +81,7 @@
             // nameLabel
             // 
             this.nameLabel.AutoSize = true;
-            this.nameLabel.Location = new System.Drawing.Point(430, 170);
+            this.nameLabel.Location = new System.Drawing.Point(432, 211);
             this.nameLabel.Name = "nameLabel";
             this.nameLabel.Size = new System.Drawing.Size(69, 17);
             this.nameLabel.TabIndex = 4;
@@ -88,7 +90,7 @@
             // 
             // nameBox
             // 
-            this.nameBox.Location = new System.Drawing.Point(527, 170);
+            this.nameBox.Location = new System.Drawing.Point(527, 211);
             this.nameBox.Name = "nameBox";
             this.nameBox.Size = new System.Drawing.Size(100, 22);
             this.nameBox.TabIndex = 5;
@@ -96,7 +98,7 @@
             // surnameLabel
             // 
             this.surnameLabel.AutoSize = true;
-            this.surnameLabel.Location = new System.Drawing.Point(430, 210);
+            this.surnameLabel.Location = new System.Drawing.Point(434, 255);
             this.surnameLabel.Name = "surnameLabel";
             this.surnameLabel.Size = new System.Drawing.Size(69, 17);
             this.surnameLabel.TabIndex = 6;
@@ -104,7 +106,7 @@
             // 
             // surnameBox
             // 
-            this.surnameBox.Location = new System.Drawing.Point(527, 210);
+            this.surnameBox.Location = new System.Drawing.Point(527, 250);
             this.surnameBox.Name = "surnameBox";
             this.surnameBox.Size = new System.Drawing.Size(100, 22);
             this.surnameBox.TabIndex = 7;
@@ -112,7 +114,7 @@
             // companyLabel
             // 
             this.companyLabel.AutoSize = true;
-            this.companyLabel.Location = new System.Drawing.Point(430, 250);
+            this.companyLabel.Location = new System.Drawing.Point(434, 295);
             this.companyLabel.Name = "companyLabel";
             this.companyLabel.Size = new System.Drawing.Size(71, 17);
             this.companyLabel.TabIndex = 8;
@@ -120,19 +122,20 @@
             // 
             // companyBox
             // 
-            this.companyBox.Location = new System.Drawing.Point(527, 250);
+            this.companyBox.Location = new System.Drawing.Point(527, 295);
             this.companyBox.Name = "companyBox";
             this.companyBox.Size = new System.Drawing.Size(100, 22);
             this.companyBox.TabIndex = 9;
             // 
             // registerButton
             // 
-            this.registerButton.Location = new System.Drawing.Point(527, 325);
+            this.registerButton.Location = new System.Drawing.Point(527, 347);
             this.registerButton.Name = "registerButton";
             this.registerButton.Size = new System.Drawing.Size(82, 27);
             this.registerButton.TabIndex = 10;
             this.registerButton.Text = "Register";
             this.registerButton.UseVisualStyleBackColor = true;
+            this.registerButton.Click += new System.EventHandler(this.registerButton_Click_1);
             // 
             // pictureBox1
             // 
@@ -145,12 +148,30 @@
             this.pictureBox1.TabIndex = 11;
             this.pictureBox1.TabStop = false;
             // 
+            // usernameBox
+            // 
+            this.usernameBox.Location = new System.Drawing.Point(527, 130);
+            this.usernameBox.Name = "usernameBox";
+            this.usernameBox.Size = new System.Drawing.Size(100, 22);
+            this.usernameBox.TabIndex = 12;
+            // 
+            // usernameLabel
+            // 
+            this.usernameLabel.AutoSize = true;
+            this.usernameLabel.Location = new System.Drawing.Point(430, 133);
+            this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.Size = new System.Drawing.Size(77, 17);
+            this.usernameLabel.TabIndex = 13;
+            this.usernameLabel.Text = "Username:";
+            // 
             // RegisterPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.usernameLabel);
+            this.Controls.Add(this.usernameBox);
             this.Controls.Add(this.mailLabel);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.registerButton);
@@ -185,5 +206,7 @@
         private System.Windows.Forms.TextBox companyBox;
         private System.Windows.Forms.Button registerButton;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox usernameBox;
+        private System.Windows.Forms.Label usernameLabel;
     }
 }
