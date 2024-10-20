@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace StockWise
 {
-    public partial class ProductManagement : Form
+    public partial class ProductManagement : UserControl
     {
         public ProductManagement()
         {
             InitializeComponent();
+        }
+
+        private void ProductManagement_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

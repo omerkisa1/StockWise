@@ -4,130 +4,142 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DevExpress.XtraBars.Navigation;  // DevExpress AccordionControl için gerekli
+using DevExpress.XtraBars.Navigation;  
+using System.Drawing;
 
 namespace StockWise
 {
     public partial class mainPage : Form
     {
+        AccordionControl accordionControl;  
+        AccordionControlElement selectedElement;  
+
         public mainPage()
         {
             InitializeComponent();
-            SetupAccordionControl();  // AccordionControl'u oluşturuyoruz
+            SetupAccordionControl();  
         }
 
-        // Hamburger menü için AccordionControl ayarları
+    
         private void SetupAccordionControl()
         {
-            AccordionControl accordionControl = new AccordionControl();
-            accordionControl.Dock = DockStyle.Left;  // Sol tarafa yerleştiriyoruz
-            accordionControl.Width = 200;  // Menü genişliği
+            accordionControl = new AccordionControl();
+            accordionControl.Dock = DockStyle.Left;  
+            accordionControl.Width = 250;  
 
-            // Ürün Yönetimi
+            // will check this colors later
+            accordionControl.Appearance.Item.Normal.BackColor = Color.LightGray; 
+            accordionControl.Appearance.Item.Normal.ForeColor = Color.Black; 
+            accordionControl.Appearance.Item.Hovered.BackColor = Color.LightBlue;  
+            accordionControl.Appearance.Item.Pressed.BackColor = Color.LightSeaGreen; 
+
+
             AccordionControlElement productManagement = new AccordionControlElement
             {
                 Text = "Ürün Yönetimi",
-                Style = ElementStyle.Item
+                Style = ElementStyle.Item,
+                ImageOptions = {
+                    Image = ResizeImage(Image.FromFile("D:\\product-development.png"), new Size(24, 24))
+                }
             };
-            productManagement.Click += ProductManagement_Click;
+            productManagement.Click += (s, e) => ChangePageAndHighlight(productManagement, new ProductManagement());
 
-            // Kategoriler
+           
             AccordionControlElement categories = new AccordionControlElement
             {
                 Text = "Kategoriler",
-                Style = ElementStyle.Item
+                Style = ElementStyle.Item,
+                ImageOptions = {
+                    Image = ResizeImage(Image.FromFile("D:\\category.png"), new Size(24, 24)) 
+                }
             };
-            categories.Click += Categories_Click;
+            categories.Click += (s, e) => ChangePageAndHighlight(categories, new CategoriesPage());
 
-            // Stok Yönetimi
+
             AccordionControlElement stockManagement = new AccordionControlElement
             {
                 Text = "Stok Yönetimi",
-                Style = ElementStyle.Item
+                Style = ElementStyle.Item,
+                ImageOptions = {
+                    Image = ResizeImage(Image.FromFile("D:\\inventory-management.png"), new Size(24, 24))  
+                }
             };
-            stockManagement.Click += StockManagement_Click;
+            stockManagement.Click += (s, e) => ChangePageAndHighlight(stockManagement, new StockManagementPage());
 
-            // Siparişler
+   
             AccordionControlElement orders = new AccordionControlElement
             {
                 Text = "Siparişler",
-                Style = ElementStyle.Item
+                Style = ElementStyle.Item,
+                ImageOptions = {
+                    Image = ResizeImage(Image.FromFile("D:\\package-tracking.png"), new Size(24, 24)) 
+                }
             };
-            orders.Click += Orders_Click;
+            orders.Click += (s, e) => ChangePageAndHighlight(orders, new OrdersPage());
 
-            // Satış Analizleri
+            
             AccordionControlElement salesAnalytics = new AccordionControlElement
             {
                 Text = "Satış Analizleri",
-                Style = ElementStyle.Item
+                Style = ElementStyle.Item,
+                ImageOptions = {
+                    Image = ResizeImage(Image.FromFile("D:\\sales.png"), new Size(24, 24))  
+                }
             };
-            salesAnalytics.Click += SalesAnalytics_Click;
+            salesAnalytics.Click += (s, e) => ChangePageAndHighlight(salesAnalytics, new SalesAnalyticsPage());
 
-            // Geri Bildirimler
+         
             AccordionControlElement feedbacks = new AccordionControlElement
             {
                 Text = "Geri Bildirimler",
-                Style = ElementStyle.Item
+                Style = ElementStyle.Item,
+                ImageOptions = {
+                    Image = ResizeImage(Image.FromFile("D:\\feedback.png"), new Size(24, 24))  
+                }
             };
-            feedbacks.Click += Feedbacks_Click;
+            feedbacks.Click += (s, e) => ChangePageAndHighlight(feedbacks, new FeedbacksPage());
 
-            // Accordion Control'e elementleri ekleyin
+         
             accordionControl.Elements.AddRange(new AccordionControlElement[]
             {
                 productManagement, categories, stockManagement, orders, salesAnalytics, feedbacks
             });
 
-            // Form'a accordionControl ekleyin
+      
             this.Controls.Add(accordionControl);
         }
 
-        // PanelContainer ile sayfa içeriğini değiştirme
+ 
         private void LoadContentToPanel(UserControl content)
         {
-            // Mevcut içeriği temizle
+  
             panelContainer.Controls.Clear();
-            // Yeni içeriği ekle
+            
             content.Dock = DockStyle.Fill;
             panelContainer.Controls.Add(content);
         }
 
-        // Ürün Yönetimi seçeneğine tıklandığında yapılacaklar
-        private void ProductManagement_Click(object sender, EventArgs e)
+        
+        private void ChangePageAndHighlight(AccordionControlElement element, UserControl content)
         {
-            // Ürün Yönetimi sayfasını yükleyin
-            LoadContentToPanel(new ProductManagementPage());  // ProductManagementPage, bir UserControl olmalı
+            
+            selectedElement = element;
+
+            
+            foreach (AccordionControlElement elem in accordionControl.Elements)
+            {
+                elem.Appearance.Normal.BackColor = Color.LightGray;  
+            }
+
+            
+            element.Appearance.Normal.BackColor = Color.LightGray;  
+            LoadContentToPanel(content);  
         }
 
-        // Kategoriler seçeneğine tıklandığında yapılacaklar
-        private void Categories_Click(object sender, EventArgs e)
+        // not sure do I need this resize thing. I will let this here and check it later.
+        private Image ResizeImage(Image imgToResize, Size size)
         {
-            // Kategoriler sayfasını yükleyin
-            LoadContentToPanel(new CategoriesPage());  // CategoriesPage, bir UserControl olmalı
-        }
-
-        // Stok Yönetimi seçeneğine tıklandığında yapılacaklar
-        private void StockManagement_Click(object sender, EventArgs e)
-        {
-            // Stok Yönetimi sayfasını yükleyin
-            LoadContentToPanel(new StockManagementPage());  // StockManagementPage, bir UserControl olmalı
-        }
-
-        private void Orders_Click(object sender, EventArgs e)
-        {
-            // Siparişler sayfasını yükleyin
-            LoadContentToPanel(new OrdersPage());  // OrdersPage, bir UserControl olmalı
-        }
-
-        private void SalesAnalytics_Click(object sender, EventArgs e)
-        {
-            // Satış Analizleri sayfasını yükleyin
-            LoadContentToPanel(new SalesAnalyticsPage());  // SalesAnalyticsPage, bir UserControl olmalı
-        }
-
-        private void Feedbacks_Click(object sender, EventArgs e)
-        {
-            // Geri Bildirimler sayfasını yükleyin
-            LoadContentToPanel(new FeedbacksPage());  // FeedbacksPage, bir UserControl olmalı
+            return (Image)(new Bitmap(imgToResize, size));
         }
     }
 }

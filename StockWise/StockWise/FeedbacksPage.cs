@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace StockWise
 {
-    public partial class FeedbacksPage : Form
+    public partial class FeedbacksPage : UserControl
     {
         public FeedbacksPage()
         {
             InitializeComponent();
+        }
+
+        private void FeedbacksPage_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
