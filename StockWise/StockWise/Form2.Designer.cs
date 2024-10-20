@@ -39,6 +39,8 @@
             this.companyLabel = new System.Windows.Forms.Label();
             this.companyBox = new System.Windows.Forms.TextBox();
             this.registerButton = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // mailBox
@@ -51,7 +53,7 @@
             // mailLabel
             // 
             this.mailLabel.AutoSize = true;
-            this.mailLabel.Location = new System.Drawing.Point(430, 90);
+            this.mailLabel.Location = new System.Drawing.Point(430, 93);
             this.mailLabel.Name = "mailLabel";
             this.mailLabel.Size = new System.Drawing.Size(67, 17);
             this.mailLabel.TabIndex = 1;
@@ -132,11 +134,25 @@
             this.registerButton.Text = "Register";
             this.registerButton.UseVisualStyleBackColor = true;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::StockWise.Properties.Resources.myLogo2_Photoroom;
+            this.pictureBox1.Location = new System.Drawing.Point(22, 113);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(382, 222);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 11;
+            this.pictureBox1.TabStop = false;
+            // 
             // RegisterPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.mailLabel);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.registerButton);
             this.Controls.Add(this.companyBox);
             this.Controls.Add(this.companyLabel);
@@ -146,10 +162,10 @@
             this.Controls.Add(this.nameLabel);
             this.Controls.Add(this.passwordBox);
             this.Controls.Add(this.passwordLabel);
-            this.Controls.Add(this.mailLabel);
             this.Controls.Add(this.mailBox);
             this.Name = "RegisterPage";
             this.Text = "StockWise";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -168,5 +184,6 @@
         private System.Windows.Forms.Label companyLabel;
         private System.Windows.Forms.TextBox companyBox;
         private System.Windows.Forms.Button registerButton;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

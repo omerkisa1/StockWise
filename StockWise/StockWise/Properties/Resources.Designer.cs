@@ -73,6 +73,16 @@ namespace StockWise.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
         /// </summary>
+        internal static System.Drawing.Bitmap myLogo2_Photoroom {
+            get {
+                object obj = ResourceManager.GetObject("myLogo2-Photoroom", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap türünde yerelleştirilmiş bir kaynak arar.
+        /// </summary>
         internal static System.Drawing.Bitmap stockwiseLogo {
             get {
                 object obj = ResourceManager.GetObject("stockwiseLogo", resourceCulture);
