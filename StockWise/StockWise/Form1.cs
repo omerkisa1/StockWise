@@ -53,10 +53,8 @@ namespace StockWise
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             string username = usernameTextBox.Text.Trim();
             string password = passwordTextBox.Text.Trim();
-
 
             var userCollection = GetUserCollection();
 
@@ -66,19 +64,21 @@ namespace StockWise
                 return;
             }
 
-
             var filter = Builders<BsonDocument>.Filter.Eq("username", username);
             var userResult = userCollection.Find(filter).FirstOrDefault();
 
             if (userResult != null)
             {
-
                 string storedPassword = userResult["password"].AsString;
 
                 if (storedPassword == password)
                 {
-                    MessageBox.Show("Giriş başarılı!");
-                    // delete the message box and create main form here    
+                    // Giriş başarılı, MainPage formunu açıyoruz
+                    //MessageBox.Show("Giriş başarılı!"); -> just hide this for now
+
+                    mainPage mainForm = new mainPage();  // mainPage formu
+                    mainForm.Show();  // Yeni formu göster
+                    this.Hide();  // Mevcut Login formunu gizle (veya Close() ile tamamen kapatabilirsin)
                 }
                 else
                 {
@@ -90,6 +90,7 @@ namespace StockWise
                 MessageBox.Show("Kullanıcı bulunamadı.");
             }
         }
+
         private void label1_Click(object sender, EventArgs e)
         {
 
