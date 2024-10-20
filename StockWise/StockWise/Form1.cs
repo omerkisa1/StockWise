@@ -12,28 +12,30 @@ namespace StockWise
 {
     public partial class LoginPage : Form
     {
-
         public LoginPage()
         {
             InitializeComponent();
+            InitializeRegisterLabel();
+        }
+        private void InitializeRegisterLabel()
+        {
+            registerLabel.Text = "Haven't you registered?";
+            registerLabel.ForeColor = System.Drawing.Color.Blue; 
+            registerLabel.Cursor = Cursors.Hand; 
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void registerLabel_Click(object sender, EventArgs e)
         {
-            registerLabel.Text = "Haven't you registered?";
-            registerLabel.ForeColor = System.Drawing.Color.Blue; // Mavi renk, tıklanabilir izlenimi verir
-            registerLabel.Cursor = Cursors.Hand; // El simgesi, tıklanabilir olduğunu gösterir
-
-            // Register formunu göster
-            RegisterForm registerForm = new RegisterForm();
-            registerForm.Show();
-            this.Hide(); // Login formunu gizlemek isterseniz
-
+            
+            RegisterPage registerForm = new RegisterPage();
+            registerForm.Show(); 
+            this.Hide(); 
         }
+
     }
 }
