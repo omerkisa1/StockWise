@@ -12,83 +12,83 @@ namespace StockWise
         public SalesAnalyticsPage()
         {
             InitializeComponent();
+            this.Dock = DockStyle.Fill;
         }
 
         private async void SalesAnalyticsPage_Load(object sender, EventArgs e)
         {
-            // Form yüklendiğinde veri çek ve grafiği güncelle
-            await LoadProductData();
+            // Başlangıçta varsayılan bir arama kelimesiyle veri yükleyebilirsiniz.
+            await LoadProductData("ayakkabı");
         }
 
-        private async Task LoadProductData()
+        private async void button1_Click(object sender, EventArgs e)
         {
-            // Trendyol API URL'si ve parametreleri
-            string apiUrl = "https://apigw.trendyol.com/discovery-web-websfxproductgroups-santral/api/v2/product-groups";
-            string productGroupIds = "113869021,110655146,603682766"; // Örnek Ürün Grupları
-            string fullUrl = $"{apiUrl}?productGroupIds={productGroupIds}&channelId=1";
+            // TextBox'a girilen arama kelimesini al
+            string searchQuery = textBox1.Text.Trim();
+
+            if (string.IsNullOrEmpty(searchQuery))
+            {
+                MessageBox.Show("Lütfen bir arama kelimesi girin.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // API isteğini çalıştır
+            await LoadProductData(searchQuery);
+        }
+
+        private async Task LoadProductData(string searchQuery)
+        {
+            string apiUrl = "https://public.trendyol.com/discovery-web-searchgw-service/v2/api/infinite-scroll/sr";
+            string fullUrl = $"{apiUrl}?q={Uri.EscapeDataString(searchQuery)}&userGenderId=1";
 
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    // API'den veri çek
                     HttpResponseMessage response = await client.GetAsync(fullUrl);
                     response.EnsureSuccessStatusCode();
 
-                    // JSON yanıtını al ve çözümle
                     string responseBody = await response.Content.ReadAsStringAsync();
                     dynamic jsonResponse = JsonConvert.DeserializeObject(responseBody);
-                    var products = jsonResponse.productGroups;
 
-                    // Grafiği güncelle
+                    var products = jsonResponse.result.products;
                     UpdateChart(products);
                 }
             }
             catch (Exception ex)
             {
-                // Hata durumunda kullanıcıya mesaj göster
                 MessageBox.Show($"Veri çekerken bir hata oluştu: {ex.Message}");
             }
         }
 
         private void UpdateChart(dynamic products)
         {
-            // Chart kontrolünü temizle
             chart1.Series.Clear();
             chart1.Titles.Clear();
 
-            // Yeni bir seri oluştur
             Series series = new Series("Ürün Fiyatları")
             {
-                ChartType = SeriesChartType.Column, // Sütun grafiği
-                IsValueShownAsLabel = true // Değerleri göster
+                ChartType = SeriesChartType.Column,
+                IsValueShownAsLabel = true
             };
 
-            // API'den gelen ürün verilerini ekle
             foreach (var product in products)
             {
                 string productName = product.name.ToString();
                 decimal productPrice = product.price.originalPrice;
-
                 series.Points.AddXY(productName, productPrice);
             }
 
-            // Chart kontrolüne seriyi ekle
             chart1.Series.Add(series);
 
-            // X ve Y eksenlerini etiketle
             chart1.ChartAreas[0].AxisX.Title = "Ürünler";
             chart1.ChartAreas[0].AxisY.Title = "Fiyatlar (₺)";
-
-            // X eksenindeki etiketlerin düzenlenmesi
-            chart1.ChartAreas[0].AxisX.Interval = 1; // Her ürünü göster
-            chart1.ChartAreas[0].AxisX.LabelStyle.Angle = -45; // Etiketleri döndür
-
-            // Grafik başlığı ekle
+            chart1.ChartAreas[0].AxisX.Interval = 1;
+            chart1.ChartAreas[0].AxisX.LabelStyle.Angle = -45;
             chart1.Titles.Add("Ürün Fiyat Analizi");
+            series.Color = System.Drawing.Color.CornflowerBlue;
 
-            // Grafiğin renk ayarları
-            series.Color = System.Drawing.Color.CornflowerBlue; // Sütun rengini ayarla
+            chart1.Dock = DockStyle.Fill;
         }
     }
 }
