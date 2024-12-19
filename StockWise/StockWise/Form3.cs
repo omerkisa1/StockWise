@@ -32,7 +32,7 @@ namespace StockWise
             accordionControl.Appearance.Item.Pressed.BackColor = Color.LightSeaGreen;
 
             // Menü öğeleri oluşturuluyor
-            AddAccordionElement("Ürün Yönetimi", "D:\\product-development.png", new ProductManagement());
+            AddAccordionElement("Ürün Yönetimi", "D:\\product-development.png", new ProductManagementPage());
             //AddAccordionElement("Kategoriler", "D:\\category.png", new CategoriesPage()); this page deprecated
             AddAccordionElement("Stok Yönetimi", "D:\\inventory-management.png", new StockManagementPage());
             AddAccordionElement("Siparişler", "D:\\package-tracking.png", new OrdersPage());

@@ -202,11 +202,11 @@
     <Compile Include="OrdersPage.Designer.cs">
       <DependentUpon>OrdersPage.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductManagement.cs">
+    <Compile Include="ProductManagementPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProductManagement.Designer.cs">
-      <DependentUpon>ProductManagement.cs</DependentUpon>
+    <Compile Include="ProductManagementPage.Designer.cs">
+      <DependentUpon>ProductManagementPage.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -237,8 +237,8 @@
     <EmbeddedResource Include="OrdersPage.resx">
       <DependentUpon>OrdersPage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProductManagement.resx">
-      <DependentUpon>ProductManagement.cs</DependentUpon>
+    <EmbeddedResource Include="ProductManagementPage.resx">
+      <DependentUpon>ProductManagementPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
