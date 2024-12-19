@@ -172,12 +172,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CategoriesPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="CategoriesPage.Designer.cs">
-      <DependentUpon>CategoriesPage.cs</DependentUpon>
-    </Compile>
     <Compile Include="FeedbacksPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -228,9 +222,6 @@
     <Compile Include="StockManagementPage.Designer.cs">
       <DependentUpon>StockManagementPage.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="CategoriesPage.resx">
-      <DependentUpon>CategoriesPage.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FeedbacksPage.resx">
       <DependentUpon>FeedbacksPage.cs</DependentUpon>
     </EmbeddedResource>

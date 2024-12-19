@@ -33,7 +33,7 @@ namespace StockWise
 
             // Menü öğeleri oluşturuluyor
             AddAccordionElement("Ürün Yönetimi", "D:\\product-development.png", new ProductManagement());
-            AddAccordionElement("Kategoriler", "D:\\category.png", new CategoriesPage());
+            //AddAccordionElement("Kategoriler", "D:\\category.png", new CategoriesPage()); this page deprecated
             AddAccordionElement("Stok Yönetimi", "D:\\inventory-management.png", new StockManagementPage());
             AddAccordionElement("Siparişler", "D:\\package-tracking.png", new OrdersPage());
             AddAccordionElement("Satış Analizleri", "D:\\sales.png", new SalesAnalyticsPage());
