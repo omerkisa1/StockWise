@@ -118,6 +118,7 @@
             this.Controls.Add(this.loginButton);
             this.Name = "LoginPage";
             this.Text = "StockWise";
+            this.Load += new System.EventHandler(this.LoginPage_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
