@@ -4,59 +4,141 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using LiveCharts;
-using LiveCharts.WinForms;
 using LiveCharts.Wpf;
+using LiveCharts.WinForms;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace StockWise
 {
     public partial class SalesAnalyticsPage : UserControl
     {
         private LiveCharts.WinForms.CartesianChart cartesianChart;
+        private Label lblSummary;
+        private TextBox txtSearch;
+        private Button btnSearch;
+        private Panel headerPanel;
+        private Panel chartPanel;
+        private Panel summaryPanel;
 
         public SalesAnalyticsPage()
         {
             InitializeComponent();
             this.Dock = DockStyle.Fill;
+            InitializeControls();
+        }
 
-            // LiveCharts için CartesianChart oluşturma
+        private void InitializeControls()
+        {
+            // Header Panel (Search Section)
+            headerPanel = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 80,
+                BackColor = Color.LightGray,
+                Padding = new Padding(10)
+            };
+
+            txtSearch = new TextBox
+            {
+                Width = 300,
+                Font = new Font("Arial", 12)
+            };
+
+            txtSearch.Text = "Enter product keyword...";
+            txtSearch.ForeColor = Color.Gray;
+
+            txtSearch.GotFocus += (s, e) =>
+            {
+                if (txtSearch.Text == "Enter product keyword...")
+                {
+                    txtSearch.Text = "";
+                    txtSearch.ForeColor = Color.Black;
+                }
+            };
+
+            txtSearch.LostFocus += (s, e) =>
+            {
+                if (string.IsNullOrWhiteSpace(txtSearch.Text))
+                {
+                    txtSearch.Text = "Enter product keyword...";
+                    txtSearch.ForeColor = Color.Gray;
+                }
+            };
+
+            btnSearch = new Button
+            {
+                Text = "Search",
+                Width = 100,
+                Height = 30,
+                Font = new Font("Arial", 10, FontStyle.Bold),
+                Margin = new Padding(10, 0, 0, 0),
+                BackColor = Color.DodgerBlue,
+                ForeColor = Color.White
+            };
+            btnSearch.Click += async (s, e) => await SearchAndLoadDataAsync();
+
+            headerPanel.Controls.Add(txtSearch);
+            headerPanel.Controls.Add(btnSearch);
+
+            // Align Controls in Header Panel
+            txtSearch.Location = new Point(10, 20);
+            btnSearch.Location = new Point(320, 20);
+
+            // Chart Panel
+            chartPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(10)
+            };
+
             cartesianChart = new LiveCharts.WinForms.CartesianChart
             {
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                BackColor = Color.White
             };
-            this.Controls.Add(cartesianChart);
 
-            // TextBox placeholder için başlangıç ayarı
-            textBox1.Text = "Arama kelimesi girin...";
-            textBox1.ForeColor = System.Drawing.Color.Gray;
+            chartPanel.Controls.Add(cartesianChart);
 
-            // TextBox olaylarını bağlama
-            textBox1.Enter += TextBox1_Enter;
-            textBox1.Leave += TextBox1_Leave;
-        }
-
-        private async void SalesAnalyticsPage_Load(object sender, EventArgs e)
-        {
-            // Uygulama ilk açıldığında varsayılan bir arama kelimesiyle veri yükleniyor.
-            await LoadProductData("ayakkabı");
-        }
-
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            string searchQuery = textBox1.Text.Trim();
-
-            if (string.IsNullOrEmpty(searchQuery) || searchQuery == "Arama kelimesi girin...")
+            // Summary Panel
+            summaryPanel = new Panel
             {
-                MessageBox.Show("Lütfen bir arama kelimesi girin.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Dock = DockStyle.Right,
+                Width = 250,
+                BackColor = Color.WhiteSmoke,
+                Padding = new Padding(10)
+            };
+
+            lblSummary = new Label
+            {
+                Dock = DockStyle.Top,
+                Height = 150,
+                Font = new Font("Arial", 12),
+                ForeColor = Color.Black,
+                Padding = new Padding(10),
+                Text = "Summary: \n- Total Products: \n- Average Price: \n- Total Price: "
+            };
+
+            summaryPanel.Controls.Add(lblSummary);
+
+            // Add panels to the main page
+            this.Controls.Add(chartPanel);
+            this.Controls.Add(summaryPanel);
+            this.Controls.Add(headerPanel);
+        }
+
+        private async Task SearchAndLoadDataAsync()
+        {
+            string query = txtSearch.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(query) || query == "Enter product keyword...")
+            {
+                MessageBox.Show("Please enter a product keyword.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            await LoadProductData(searchQuery);
-        }
-
-        private async Task LoadProductData(string searchQuery)
-        {
             string apiUrl = "https://public.trendyol.com/discovery-web-searchgw-service/v2/api/infinite-scroll/sr";
-            string fullUrl = $"{apiUrl}?q={Uri.EscapeDataString(searchQuery)}&userGenderId=1";
+            string fullUrl = $"{apiUrl}?q={Uri.EscapeDataString(query)}&userGenderId=1";
 
             try
             {
@@ -66,16 +148,13 @@ namespace StockWise
                     response.EnsureSuccessStatusCode();
 
                     string responseBody = await response.Content.ReadAsStringAsync();
-
-                    // JSON verisini deserialize et
                     dynamic jsonResponse = JsonConvert.DeserializeObject(responseBody);
                     var products = jsonResponse.result?.products;
 
-                    // Ürün kontrolü
                     if (products == null || products.Count == 0)
                     {
-                        MessageBox.Show("Aradığınız kelimeye ait ürün bulunamadı.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        cartesianChart.Series.Clear();
+                        MessageBox.Show("No products found for the given keyword.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ClearChart();
                         return;
                     }
 
@@ -84,79 +163,75 @@ namespace StockWise
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Veri çekerken bir hata oluştu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error fetching data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void UpdateChart(dynamic products)
         {
-            cartesianChart.Series.Clear();
-            cartesianChart.AxisX.Clear();
-            cartesianChart.AxisY.Clear();
+            ClearChart();
 
-            var seriesCollection = new SeriesCollection();
-            var productNames = new string[products.Count];
-            var productPrices = new double[products.Count];
+            var productNames = new List<string>();
+            var productPrices = new List<double>();
 
-            int index = 0;
+            double totalPrice = 0;
             foreach (var product in products)
             {
-                string productName = product.name.ToString();
-                decimal productPrice = product.price.originalPrice;
+                string name = product.name.ToString();
+                double price = (double)product.price.originalPrice;
 
-                productNames[index] = productName;
-                productPrices[index] = (double)productPrice;
-                index++;
+                productNames.Add(name);
+                productPrices.Add(price);
+
+                totalPrice += price;
             }
 
-            seriesCollection.Add(new ColumnSeries
+            cartesianChart.Series = new SeriesCollection
             {
-                Title = "Fiyat",
-                Values = new ChartValues<double>(productPrices)
-            });
+                new ColumnSeries
+                {
+                    Title = "Price",
+                    Values = new LiveCharts.ChartValues<double>(productPrices)
+                }
+            };
 
-            // Grafiği güncelle
-            cartesianChart.Series = seriesCollection;
             cartesianChart.AxisX.Add(new Axis
             {
-                Title = "Ürünler",
+                Title = "Products",
                 Labels = productNames,
-                Separator = new Separator { Step = 1 }
+                Separator = new Separator { Step = 1, IsEnabled = false }
             });
 
             cartesianChart.AxisY.Add(new Axis
             {
-                Title = "Fiyat (₺)"
+                Title = "Price (₺)",
+                LabelFormatter = value => value.ToString("C")
             });
+
+            lblSummary.Text = $"Summary:\n- Total Products: {productNames.Count}\n- Average Price: {totalPrice / productNames.Count:C}\n- Total Price: {totalPrice:C}";
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void ClearChart()
+        {
+            cartesianChart.Series.Clear();
+            cartesianChart.AxisX.Clear();
+            cartesianChart.AxisY.Clear();
+            lblSummary.Text = "Summary: \n- Total Products: \n- Average Price: \n- Total Price: ";
+        }
+
+        private void SalesAnalyticsPage_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void button1_Click_1(object sender, EventArgs e)
+        public void button1_Click_1(object sender, EventArgs e)
         {
 
         }
 
-        // Placeholder için manuel olaylar
-        private void TextBox1_Enter(object sender, EventArgs e)
+        public void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if (textBox1.Text == "Arama kelimesi girin...")
-            {
-                textBox1.Text = "";
-                textBox1.ForeColor = System.Drawing.Color.Black;
-            }
-        }
 
-        private void TextBox1_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(textBox1.Text))
-            {
-                textBox1.Text = "Arama kelimesi girin...";
-                textBox1.ForeColor = System.Drawing.Color.Gray;
-            }
         }
     }
 }
