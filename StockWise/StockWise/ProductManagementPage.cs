@@ -1,32 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using DevExpress.XtraEditors;
 using DevExpress.XtraGrid;
 using DevExpress.XtraGrid.Views.Grid;
-using DevExpress.XtraEditors;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace StockWise
 {
-    public partial class ProductManagementPage : UserControl
+    public partial class ProductManagementPage : XtraUserControl
     {
+        private IMongoCollection<BsonDocument> _storeCollection;
+
         private GridControl gridControlStores;
         private GridView gridViewStores;
-        private GridControl gridControlProducts;
-        private GridView gridViewProducts;
-        private SimpleButton buttonRefresh;
-        private SimpleButton buttonAddStore;
-        private ComboBoxEdit filterComboBox;
 
-        private IMongoCollection<BsonDocument> _productCollection;
+        private TextEdit textEditStoreName;
+        private SimpleButton buttonAddStore;
+        private SimpleButton buttonRefreshStores;
+
+        private TextEdit textEditProductName;
+        private SpinEdit spinEditPrice;
+        private SpinEdit spinEditStock;
+        private ComboBoxEdit comboBoxCategory;
+        private SimpleButton buttonAddProduct;
+
+        private ComboBoxEdit comboBoxStore1;
+        private ComboBoxEdit comboBoxStore2;
+        private ComboBoxEdit comboBoxCompareCategory;
+        private SimpleButton buttonCompare;
+        private GridControl gridControlComparison;
+        private GridView gridViewComparison;
 
         public ProductManagementPage()
         {
             InitializeComponent();
-            InitializeControls();
             InitializeDatabaseConnection();
+            InitializeControls();
             LoadStores();
         }
 
@@ -34,298 +47,211 @@ namespace StockWise
         {
             var client = new MongoClient("mongodb://localhost:27017");
             var database = client.GetDatabase("users");
-            _productCollection = database.GetCollection<BsonDocument>("store");
+            _storeCollection = database.GetCollection<BsonDocument>("store");
         }
 
         private void InitializeControls()
         {
-            // Stores GridControl Initialization
-            gridControlStores = new GridControl
+            // Split Container for Layout
+            var splitContainer = new DevExpress.XtraEditors.SplitContainerControl
             {
-                Dock = DockStyle.Top,
-                Height = 200
+                Dock = DockStyle.Fill,
+                Horizontal = false,
+                SplitterPosition = 300
             };
+            Controls.Add(splitContainer);
 
+            // Left-Right Layout for Comparison
+            var comparisonSplitContainer = new SplitContainerControl
+            {
+                Dock = DockStyle.Fill,
+                Horizontal = true,
+                SplitterPosition = 400
+            };
+            splitContainer.Panel2.Controls.Add(comparisonSplitContainer);
+
+            // Upper Panel
+            var upperPanel = new PanelControl { Dock = DockStyle.Fill };
+            splitContainer.Panel1.Controls.Add(upperPanel);
+
+            var labelStoreName = new LabelControl { Text = "Store Name:", Location = new Point(20, 20) };
+            textEditStoreName = new TextEdit { Location = new Point(100, 15), Width = 200 };
+
+            buttonAddStore = new SimpleButton { Text = "Add Store", Location = new Point(320, 15), Width = 100 };
+            buttonAddStore.Click += ButtonAddStore_Click;
+
+            buttonRefreshStores = new SimpleButton { Text = "Refresh", Location = new Point(440, 15), Width = 100 };
+            buttonRefreshStores.Click += ButtonRefreshStores_Click;
+
+            gridControlStores = new GridControl { Dock = DockStyle.Bottom, Height = 200 };
             gridViewStores = new GridView(gridControlStores)
             {
                 OptionsBehavior = { Editable = false },
                 OptionsView = { ShowGroupPanel = false }
             };
-
             gridControlStores.MainView = gridViewStores;
-            gridViewStores.Columns.AddVisible("storeId", "Store ID");
-            gridViewStores.Columns.AddVisible("storeName", "Store Name");
+            gridViewStores.Columns.AddVisible("StoreId", "Store ID");
+            gridViewStores.Columns.AddVisible("StoreName", "Store Name");
 
-            gridViewStores.FocusedRowChanged += GridViewStores_FocusedRowChanged;
+            upperPanel.Controls.Add(labelStoreName);
+            upperPanel.Controls.Add(textEditStoreName);
+            upperPanel.Controls.Add(buttonAddStore);
+            upperPanel.Controls.Add(buttonRefreshStores);
+            upperPanel.Controls.Add(gridControlStores);
 
-            Controls.Add(gridControlStores);
+            // Left Panel for Selection
+            var selectionPanel = new PanelControl { Dock = DockStyle.Fill };
+            comparisonSplitContainer.Panel1.Controls.Add(selectionPanel);
 
-            // Buttons Panel
-            var buttonsPanel = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 80
-            };
+            var labelStore1 = new LabelControl { Text = "Select Store 1:", Location = new Point(20, 20) };
+            comboBoxStore1 = new ComboBoxEdit { Location = new Point(120, 15), Width = 200 };
 
-            // Refresh Button
-            buttonRefresh = new SimpleButton
-            {
-                Text = "Refresh",
-                Location = new System.Drawing.Point(20, 10),
-                Width = 100
-            };
-            buttonRefresh.Click += ButtonRefresh_Click;
-            buttonsPanel.Controls.Add(buttonRefresh);
+            var labelStore2 = new LabelControl { Text = "Select Store 2:", Location = new Point(20, 60) };
+            comboBoxStore2 = new ComboBoxEdit { Location = new Point(120, 55), Width = 200 };
 
-            // Add Store Button
-            buttonAddStore = new SimpleButton
-            {
-                Text = "Add Store",
-                Location = new System.Drawing.Point(140, 10),
-                Width = 100
-            };
-            buttonAddStore.Click += ButtonAddStore_Click;
-            buttonsPanel.Controls.Add(buttonAddStore);
+            var labelCategory = new LabelControl { Text = "Category:", Location = new Point(20, 100) };
+            comboBoxCompareCategory = new ComboBoxEdit { Location = new Point(120, 95), Width = 200 };
+            comboBoxCompareCategory.Properties.Items.AddRange(new string[] { "Elektronik", "Giyim", "Ayakkabı", "Dış Giyim" });
 
-            // Filter ComboBox
-            filterComboBox = new ComboBoxEdit
-            {
-                Location = new System.Drawing.Point(260, 10),
-                Width = 150,
-                Properties = { TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor }
-            };
-            filterComboBox.Properties.Items.AddRange(new string[] { "All", "Sold", "Ordered", "Unknown" });
-            filterComboBox.SelectedIndexChanged += FilterComboBox_SelectedIndexChanged;
-            buttonsPanel.Controls.Add(filterComboBox);
+            buttonCompare = new SimpleButton { Text = "Compare", Location = new Point(120, 140), Width = 100 };
+            buttonCompare.Click += ButtonCompare_Click;
 
-            Controls.Add(buttonsPanel);
+            selectionPanel.Controls.Add(labelStore1);
+            selectionPanel.Controls.Add(comboBoxStore1);
+            selectionPanel.Controls.Add(labelStore2);
+            selectionPanel.Controls.Add(comboBoxStore2);
+            selectionPanel.Controls.Add(labelCategory);
+            selectionPanel.Controls.Add(comboBoxCompareCategory);
+            selectionPanel.Controls.Add(buttonCompare);
 
-            // Products GridControl Initialization
-            gridControlProducts = new GridControl
-            {
-                Dock = DockStyle.Fill
-            };
+            // Right Panel for Results
+            var resultsPanel = new PanelControl { Dock = DockStyle.Fill };
+            comparisonSplitContainer.Panel2.Controls.Add(resultsPanel);
 
-            gridViewProducts = new GridView(gridControlProducts)
+            gridControlComparison = new GridControl { Dock = DockStyle.Fill };
+            gridViewComparison = new GridView(gridControlComparison)
             {
                 OptionsBehavior = { Editable = false },
                 OptionsView = { ShowGroupPanel = false }
             };
+            gridControlComparison.MainView = gridViewComparison;
+            gridViewComparison.Columns.AddVisible("ProductName", "Product Name");
+            gridViewComparison.Columns.AddVisible("Store1Price", "Store 1 Price");
+            gridViewComparison.Columns.AddVisible("Store1Stock", "Store 1 Stock");
+            gridViewComparison.Columns.AddVisible("Store2Price", "Store 2 Price");
+            gridViewComparison.Columns.AddVisible("Store2Stock", "Store 2 Stock");
 
-            gridControlProducts.MainView = gridViewProducts;
-            gridViewProducts.Columns.AddVisible("productId", "Product ID");
-            gridViewProducts.Columns.AddVisible("productName", "Product Name");
-            gridViewProducts.Columns.AddVisible("price", "Price");
-            gridViewProducts.Columns.AddVisible("stock", "Stock");
-            gridViewProducts.Columns.AddVisible("category", "Category");
-            gridViewProducts.Columns.AddVisible("status", "Status"); // New Status Column
-
-            Controls.Add(gridControlProducts);
-
-            // Set Form Properties
-            this.Dock = DockStyle.Fill;
-            this.AutoScroll = true;
+            resultsPanel.Controls.Add(gridControlComparison);
         }
 
         private void LoadStores()
         {
-            var stores = GetStoresFromDatabase();
-            gridControlStores.DataSource = stores;
-        }
+            var stores = _storeCollection.Find(new BsonDocument()).ToList();
+            var storeList = new List<Store>();
 
-        private void LoadProducts(string storeId)
-        {
-            var products = GetProductsFromDatabase(storeId);
-            gridControlProducts.DataSource = products;
-        }
+            comboBoxStore1.Properties.Items.Clear();
+            comboBoxStore2.Properties.Items.Clear();
 
-        private void LoadAllProducts()
-        {
-            var allProducts = GetAllProductsFromDatabase();
-            gridControlProducts.DataSource = allProducts;
-        }
-
-        private List<Store> GetStoresFromDatabase()
-        {
-            try
+            foreach (var store in stores)
             {
-                var documents = _productCollection.Find(new BsonDocument()).ToList();
-
-                List<Store> storeList = new List<Store>();
-                foreach (var doc in documents)
+                var storeObj = new Store
                 {
-                    var store = new Store
-                    {
-                        StoreId = doc.GetValue("storeId", new BsonString("Unknown")).AsString,
-                        StoreName = doc.GetValue("storeName", new BsonString("Unknown")).AsString
-                    };
-                    storeList.Add(store);
-                }
-
-                return storeList;
+                    StoreId = store.GetValue("storeId", new BsonString("Unknown")).AsString,
+                    StoreName = store.GetValue("storeName", new BsonString("Unknown")).AsString
+                };
+                storeList.Add(storeObj);
+                comboBoxStore1.Properties.Items.Add(storeObj.StoreName);
+                comboBoxStore2.Properties.Items.Add(storeObj.StoreName);
             }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show("Error loading stores: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return new List<Store>();
-            }
-        }
 
-        private List<Product> GetProductsFromDatabase(string storeId)
-        {
-            try
-            {
-                var storeDoc = _productCollection.Find(Builders<BsonDocument>.Filter.Eq("storeId", storeId)).FirstOrDefault();
-
-                if (storeDoc != null && storeDoc.Contains("products") && storeDoc["products"].IsBsonArray)
-                {
-                    var productsArray = storeDoc["products"].AsBsonArray;
-                    List<Product> productList = new List<Product>();
-
-                    foreach (var productValue in productsArray)
-                    {
-                        if (productValue.IsBsonDocument)
-                        {
-                            var productDoc = productValue.AsBsonDocument;
-                            var product = new Product
-                            {
-                                ProductId = productDoc.GetValue("productId", new BsonString("Unknown")).AsString,
-                                ProductName = productDoc.GetValue("productName", new BsonString("Unknown")).AsString,
-                                Price = productDoc.GetValue("price", new BsonDouble(0)).ToDecimal(),
-                                Stock = productDoc.GetValue("stock", new BsonInt32(0)).ToInt32(),
-                                Category = productDoc.GetValue("category", new BsonString("Unknown")).AsString,
-                                Status = productDoc.GetValue("status", new BsonString("Unknown")).AsString
-                            };
-                            productList.Add(product);
-                        }
-                    }
-
-                    return productList;
-                }
-
-                return new List<Product>();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show("Error loading products: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return new List<Product>();
-            }
-        }
-
-        private List<Product> GetAllProductsFromDatabase()
-        {
-            try
-            {
-                var documents = _productCollection.Find(new BsonDocument()).ToList();
-                List<Product> allProducts = new List<Product>();
-
-                foreach (var doc in documents)
-                {
-                    if (doc.Contains("products") && doc["products"].IsBsonArray)
-                    {
-                        var productsArray = doc["products"].AsBsonArray;
-                        foreach (var productValue in productsArray)
-                        {
-                            if (productValue.IsBsonDocument)
-                            {
-                                var productDoc = productValue.AsBsonDocument;
-                                var product = new Product
-                                {
-                                    ProductId = productDoc.GetValue("productId", new BsonString("Unknown")).AsString,
-                                    ProductName = productDoc.GetValue("productName", new BsonString("Unknown")).AsString,
-                                    Price = productDoc.GetValue("price", new BsonDouble(0)).ToDecimal(),
-                                    Stock = productDoc.GetValue("stock", new BsonInt32(0)).ToInt32(),
-                                    Category = productDoc.GetValue("category", new BsonString("Unknown")).AsString,
-                                    Status = productDoc.GetValue("status", new BsonString("Unknown")).AsString,
-                                    StoreName = doc.GetValue("storeName", new BsonString("Unknown")).AsString
-                                };
-                                allProducts.Add(product);
-                            }
-                        }
-                    }
-                }
-
-                return allProducts;
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show("Error loading all products: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return new List<Product>();
-            }
-        }
-
-        private void FilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var selectedFilter = filterComboBox.SelectedItem.ToString();
-
-            if (selectedFilter == "All")
-            {
-                LoadAllProducts();
-            }
-            else
-            {
-                var filteredProducts = GetAllProductsFromDatabase().Where(p => p.Status == selectedFilter).ToList();
-                gridControlProducts.DataSource = filteredProducts;
-            }
-        }
-
-        private void GridViewStores_FocusedRowChanged(object sender, DevExpress.XtraGrid.Views.Base.FocusedRowChangedEventArgs e)
-        {
-            if (gridViewStores.GetFocusedRow() is Store selectedStore)
-            {
-                LoadProducts(selectedStore.StoreId);
-            }
-        }
-
-        private void ButtonRefresh_Click(object sender, EventArgs e)
-        {
-            LoadAllProducts();
+            gridControlStores.DataSource = storeList;
         }
 
         private void ButtonAddStore_Click(object sender, EventArgs e)
         {
-            string storeName = XtraInputBox.Show("Enter Store Name:", "Add Store", "");
+            var storeName = textEditStoreName.Text;
 
-            if (string.IsNullOrEmpty(storeName))
+            if (string.IsNullOrWhiteSpace(storeName))
             {
                 XtraMessageBox.Show("Store name cannot be empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            try
+            var newStore = new BsonDocument
             {
-                var newStore = new BsonDocument
-                {
-                    { "storeId", Guid.NewGuid().ToString() },
-                    { "storeName", storeName },
-                    { "products", new BsonArray() } // Initialize with empty products
-                };
+                { "storeId", Guid.NewGuid().ToString() },
+                { "storeName", storeName },
+                { "products", new BsonArray() }
+            };
 
-                _productCollection.InsertOne(newStore);
-                LoadStores();
-                XtraMessageBox.Show("Store added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
+            _storeCollection.InsertOne(newStore);
+            textEditStoreName.Text = string.Empty;
+            LoadStores();
+            XtraMessageBox.Show("Store added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void ButtonRefreshStores_Click(object sender, EventArgs e)
+        {
+            LoadStores();
+        }
+
+        private void ButtonCompare_Click(object sender, EventArgs e)
+        {
+            var store1Name = comboBoxStore1.EditValue?.ToString();
+            var store2Name = comboBoxStore2.EditValue?.ToString();
+            var category = comboBoxCompareCategory.EditValue?.ToString();
+
+            if (string.IsNullOrWhiteSpace(store1Name) || string.IsNullOrWhiteSpace(store2Name) || string.IsNullOrWhiteSpace(category))
             {
-                XtraMessageBox.Show("Error adding store: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                XtraMessageBox.Show("Please select both stores and a category.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            var store1 = _storeCollection.Find(Builders<BsonDocument>.Filter.Eq("storeName", store1Name)).FirstOrDefault();
+            var store2 = _storeCollection.Find(Builders<BsonDocument>.Filter.Eq("storeName", store2Name)).FirstOrDefault();
+
+            if (store1 == null || store2 == null)
+            {
+                XtraMessageBox.Show("One or both stores could not be found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var store1Products = store1["products"].AsBsonArray.Where(p => p["category"].AsString == category).ToList();
+            var store2Products = store2["products"].AsBsonArray.Where(p => p["category"].AsString == category).ToList();
+
+            var comparisonData = new List<dynamic>();
+
+            foreach (var product1 in store1Products)
+            {
+                var productName = product1["productName"].AsString;
+                var store1Price = product1["price"].ToDouble();
+                var store1Stock = product1["stock"].ToInt32();
+
+                var matchingProduct = store2Products.FirstOrDefault(p => p["productName"].AsString == productName);
+
+                if (matchingProduct != null)
+                {
+                    var store2Price = matchingProduct["price"].ToDouble();
+                    var store2Stock = matchingProduct["stock"].ToInt32();
+
+                    comparisonData.Add(new
+                    {
+                        ProductName = productName,
+                        Store1Price = store1Price,
+                        Store1Stock = store1Stock,
+                        Store2Price = store2Price,
+                        Store2Stock = store2Stock
+                    });
+                }
+            }
+
+            gridControlComparison.DataSource = comparisonData;
         }
 
         public class Store
         {
             public string StoreId { get; set; }
             public string StoreName { get; set; }
-        }
-
-        public class Product
-        {
-            public string ProductId { get; set; }
-            public string ProductName { get; set; }
-            public decimal Price { get; set; }
-            public int Stock { get; set; }
-            public string Category { get; set; }
-            public string Status { get; set; } // New Status Field
-            public string StoreName { get; set; } // Store name for All Products View
         }
         private void ProductManagement_Load(object sender, EventArgs e)
         {
