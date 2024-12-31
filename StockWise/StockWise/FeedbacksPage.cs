@@ -22,10 +22,9 @@ namespace StockWise
 
         private void InitializeControls()
         {
-         
             validationProvider = new DXValidationProvider();
 
- 
+           
             textEditName = new TextEdit
             {
                 Location = new System.Drawing.Point(20, 20),
@@ -36,29 +35,28 @@ namespace StockWise
             Controls.Add(textEditName);
             AddValidationRule(textEditName, "Name cannot be empty.");
 
-      
             textEditEmail = new TextEdit
             {
                 Location = new System.Drawing.Point(20, 60),
                 Width = 300,
-                Properties = { NullText = "Your Email" } 
+                Properties = { NullText = "Your Email" }
             };
             textEditEmail.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             Controls.Add(textEditEmail);
             AddValidationRule(textEditEmail, "Email cannot be empty.");
 
-     
             memoEditMessage = new MemoEdit
             {
                 Location = new System.Drawing.Point(20, 100),
                 Width = 500,
                 Height = 150,
-                Properties = { NullText = "Your Message" } 
+                Properties = { NullText = "Your Message" }
             };
             memoEditMessage.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(memoEditMessage);
             AddValidationRule(memoEditMessage, "Message cannot be empty.");
 
+          
             buttonSubmit = new SimpleButton
             {
                 Text = "Submit",
@@ -69,7 +67,7 @@ namespace StockWise
             buttonSubmit.Click += ButtonSubmit_Click;
             Controls.Add(buttonSubmit);
 
-
+            
             this.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
             this.AutoScroll = true;
         }
@@ -86,45 +84,68 @@ namespace StockWise
 
         private void ButtonSubmit_Click(object sender, EventArgs e)
         {
+   
             if (!validationProvider.Validate())
             {
-                XtraMessageBox.Show("Please fill in all required fields.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                XtraMessageBox.Show("Please fill in all required fields.",
+                                    "Validation Error",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
                 return;
             }
 
             try
             {
+         
                 var mail = new MailMessage
                 {
-                    From = new MailAddress("your_email@example.com"), // here too
+                    From = new MailAddress("omerkisa0055@gmail.com"),
                     Subject = "Feedback from " + textEditName.Text,
-                    Body = $"Name: {textEditName.Text}\nEmail: {textEditEmail.Text}\nMessage:\n{memoEditMessage.Text}"
+                    Body = $"Name: {textEditName.Text}\n" +
+                           $"Email: {textEditEmail.Text}\n" +
+                           $"Message:\n{memoEditMessage.Text}"
                 };
-                mail.To.Add("your_email@example.com");  // dont forget to setup ur mail here
-
-                var smtpClient = new SmtpClient("smtp.example.com") 
-                {
-                    Port = 587,
-                    Credentials = new System.Net.NetworkCredential("your_email@example.com", "your_password"),
-                    EnableSsl = true
-                };
-                smtpClient.Send(mail);
-
-                XtraMessageBox.Show("Your feedback has been sent successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          
+                mail.To.Add("omerkisa0055@gmail.com");
 
                 
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new System.Net.NetworkCredential(
+                        "omerkisa0055@gmail.com",    
+                        "xcbxfjjzxgtusdbi"           
+                    ),
+                    EnableSsl = true
+                };
+
+               
+                smtpClient.Send(mail);
+
+                
+                XtraMessageBox.Show("Your feedback has been sent successfully.",
+                                    "Success",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+
+              
                 textEditName.Text = string.Empty;
                 textEditEmail.Text = string.Empty;
                 memoEditMessage.Text = string.Empty;
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show("An error occurred while sending your feedback: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              
+                XtraMessageBox.Show("An error occurred while sending your feedback: " + ex.Message,
+                                    "Error",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
             }
         }
+
         private void FeedbacksPage_Load(object sender, EventArgs e)
         {
-
+            
         }
     }
 }
