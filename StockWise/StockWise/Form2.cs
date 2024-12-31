@@ -88,5 +88,12 @@ namespace StockWise
         private void nameLabel_Click(object sender, EventArgs e)
         {
         }
+
+        private void goBackButton_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            LoginPage loginForm = new LoginPage();
+            loginForm.Show();
+        }
     }
 }

@@ -42,6 +42,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.usernameBox = new System.Windows.Forms.TextBox();
             this.usernameLabel = new System.Windows.Forms.Label();
+            this.goBackButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -164,12 +165,23 @@
             this.usernameLabel.TabIndex = 13;
             this.usernameLabel.Text = "Username:";
             // 
+            // goBackButton
+            // 
+            this.goBackButton.Location = new System.Drawing.Point(22, 24);
+            this.goBackButton.Name = "goBackButton";
+            this.goBackButton.Size = new System.Drawing.Size(112, 30);
+            this.goBackButton.TabIndex = 14;
+            this.goBackButton.Text = "Login Page";
+            this.goBackButton.UseVisualStyleBackColor = true;
+            this.goBackButton.Click += new System.EventHandler(this.goBackButton_Click);
+            // 
             // RegisterPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.goBackButton);
             this.Controls.Add(this.usernameLabel);
             this.Controls.Add(this.usernameBox);
             this.Controls.Add(this.mailLabel);
@@ -208,5 +220,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TextBox usernameBox;
         private System.Windows.Forms.Label usernameLabel;
+        private System.Windows.Forms.Button goBackButton;
     }
 }
