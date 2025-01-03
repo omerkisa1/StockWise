@@ -22,12 +22,6 @@ namespace StockWise
         private SimpleButton buttonAddStore;
         private SimpleButton buttonRefreshStores;
 
-        private TextEdit textEditProductName;
-        private SpinEdit spinEditPrice;
-        private SpinEdit spinEditStock;
-        private ComboBoxEdit comboBoxCategory;
-        private SimpleButton buttonAddProduct;
-
         private ComboBoxEdit comboBoxStore1;
         private ComboBoxEdit comboBoxStore2;
         private ComboBoxEdit comboBoxCompareCategory;
@@ -111,7 +105,6 @@ namespace StockWise
 
             var labelCategory = new LabelControl { Text = "Category:", Location = new Point(20, 100) };
             comboBoxCompareCategory = new ComboBoxEdit { Location = new Point(120, 95), Width = 200 };
-            comboBoxCompareCategory.Properties.Items.AddRange(new string[] { "Elektronik", "Giyim", "Ayakkabı", "Dış Giyim" });
 
             buttonCompare = new SimpleButton { Text = "Compare", Location = new Point(120, 140), Width = 100 };
             buttonCompare.Click += ButtonCompare_Click;
@@ -165,6 +158,30 @@ namespace StockWise
             }
 
             gridControlStores.DataSource = storeList;
+
+            // Load categories dynamically
+            LoadCategories();
+        }
+
+        private void LoadCategories()
+        {
+            var stores = _storeCollection.Find(new BsonDocument()).ToList();
+            var categories = new HashSet<string>();
+
+            foreach (var store in stores)
+            {
+                var products = store.GetValue("products", new BsonArray()).AsBsonArray;
+                foreach (var product in products)
+                {
+                    if (product.AsBsonDocument.Contains("category"))
+                    {
+                        categories.Add(product["category"].AsString);
+                    }
+                }
+            }
+
+            comboBoxCompareCategory.Properties.Items.Clear();
+            comboBoxCompareCategory.Properties.Items.AddRange(categories.ToArray());
         }
 
         private void ButtonAddStore_Click(object sender, EventArgs e)
@@ -216,8 +233,10 @@ namespace StockWise
                 return;
             }
 
-            var store1Products = store1["products"].AsBsonArray.Where(p => p["category"].AsString == category).ToList();
-            var store2Products = store2["products"].AsBsonArray.Where(p => p["category"].AsString == category).ToList();
+            var store1Products = store1["products"].AsBsonArray.Where(p => p.AsBsonDocument.Contains("category") && p["category"].AsString == category).ToList();
+
+            var store2Products = store2["products"].AsBsonArray.Where(p => p.AsBsonDocument.Contains("category") && p["category"].AsString == category).ToList();
+
 
             var comparisonData = new List<dynamic>();
 
