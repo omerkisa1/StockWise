@@ -210,6 +210,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PurchasePage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PurchasePage.Designer.cs">
+      <DependentUpon>PurchasePage.cs</DependentUpon>
+    </Compile>
     <Compile Include="SalesAnalyticsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>

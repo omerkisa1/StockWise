@@ -38,6 +38,7 @@ namespace StockWise
             AddAccordionElement("Siparişler", "D:\\package-tracking.png", new OrdersPage());
             AddAccordionElement("Satış Analizleri", "D:\\sales.png", new SalesAnalyticsPage());
             AddAccordionElement("Geri Bildirimler", "D:\\feedback.png", new FeedbacksPage());
+            AddAccordionElement("Satın Alım", "D:\\sales.png", new PurchasePage());
 
             // AccordionControl formun kontrol listesine ekleniyor
             this.Controls.Add(accordionControl);
