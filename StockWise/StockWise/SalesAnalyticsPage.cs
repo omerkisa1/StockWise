@@ -8,24 +8,37 @@ using LiveCharts.Wpf;
 using LiveCharts.WinForms;
 using System.Collections.Generic;
 using System.Drawing;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace StockWise
 {
     public partial class SalesAnalyticsPage : UserControl
     {
         private LiveCharts.WinForms.CartesianChart cartesianChart;
-        private Label lblSummary;
+        private Label lblSummary; // Sağdaki Summary alanı
         private TextBox txtSearch;
         private Button btnSearch;
+        private Button btnSaveProducts;
         private Panel headerPanel;
         private Panel chartPanel;
         private Panel summaryPanel;
 
+        private IMongoCollection<BsonDocument> _savedProductsCollection;
+
         public SalesAnalyticsPage()
         {
             InitializeComponent();
+            InitializeDatabaseConnection();
             this.Dock = DockStyle.Fill;
             InitializeControls();
+        }
+
+        private void InitializeDatabaseConnection()
+        {
+            var client = new MongoClient("mongodb://localhost:27017");
+            var database = client.GetDatabase("users");
+            _savedProductsCollection = database.GetCollection<BsonDocument>("savedProducts");
         }
 
         private void InitializeControls()
@@ -78,12 +91,26 @@ namespace StockWise
             };
             btnSearch.Click += async (s, e) => await SearchAndLoadDataAsync();
 
+            btnSaveProducts = new Button
+            {
+                Text = "Save Products",
+                Width = 150,
+                Height = 30,
+                Font = new Font("Arial", 10, FontStyle.Bold),
+                Margin = new Padding(10, 0, 0, 0),
+                BackColor = Color.Green,
+                ForeColor = Color.White,
+                Enabled = false
+            };
+            btnSaveProducts.Click += async (s, e) => await SaveProductsToDatabaseAsync();
+
             headerPanel.Controls.Add(txtSearch);
             headerPanel.Controls.Add(btnSearch);
+            headerPanel.Controls.Add(btnSaveProducts);
 
-            // Align Controls in Header Panel
             txtSearch.Location = new Point(10, 20);
             btnSearch.Location = new Point(320, 20);
+            btnSaveProducts.Location = new Point(450, 20);
 
             // Chart Panel
             chartPanel = new Panel
@@ -106,17 +133,19 @@ namespace StockWise
                 Dock = DockStyle.Right,
                 Width = 250,
                 BackColor = Color.WhiteSmoke,
-                Padding = new Padding(10)
+                Padding = new Padding(10),
+                BorderStyle = BorderStyle.FixedSingle // Daha şık bir görünüm için kenarlık
             };
 
             lblSummary = new Label
             {
-                Dock = DockStyle.Top,
-                Height = 150,
+                Text = "Summary: \n- Total Products: \n- Average Price: \n- Total Price: ",
                 Font = new Font("Arial", 12),
                 ForeColor = Color.Black,
-                Padding = new Padding(10),
-                Text = "Summary: \n- Total Products: \n- Average Price: \n- Total Price: "
+                Dock = DockStyle.Top,
+                AutoSize = false,
+                Height = 150,
+                TextAlign = ContentAlignment.TopLeft
             };
 
             summaryPanel.Controls.Add(lblSummary);
@@ -167,6 +196,42 @@ namespace StockWise
             }
         }
 
+        private async Task SaveProductsToDatabaseAsync()
+        {
+            if (cartesianChart.Series.Count == 0)
+            {
+                MessageBox.Show("No products available to save.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                var productNames = cartesianChart.AxisX[0].Labels;
+                var productPrices = (LiveCharts.ChartValues<double>)cartesianChart.Series[0].Values;
+
+                var productsToSave = new List<BsonDocument>();
+
+                for (int i = 0; i < productNames.Count; i++)
+                {
+                    var productDoc = new BsonDocument
+                    {
+                        { "productName", productNames[i] },
+                        { "price", productPrices[i] }
+                    };
+                    productsToSave.Add(productDoc);
+                }
+
+                await _savedProductsCollection.InsertManyAsync(productsToSave);
+
+                MessageBox.Show("Products saved successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                btnSaveProducts.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving products: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void UpdateChart(dynamic products)
         {
             ClearChart();
@@ -209,6 +274,7 @@ namespace StockWise
             });
 
             lblSummary.Text = $"Summary:\n- Total Products: {productNames.Count}\n- Average Price: {totalPrice / productNames.Count:C}\n- Total Price: {totalPrice:C}";
+            btnSaveProducts.Enabled = true;
         }
 
         private void ClearChart()
@@ -217,9 +283,9 @@ namespace StockWise
             cartesianChart.AxisX.Clear();
             cartesianChart.AxisY.Clear();
             lblSummary.Text = "Summary: \n- Total Products: \n- Average Price: \n- Total Price: ";
+            btnSaveProducts.Enabled = false;
         }
-
-        private void SalesAnalyticsPage_Load(object sender, EventArgs e)
+                private void SalesAnalyticsPage_Load(object sender, EventArgs e)
         {
 
         }
