@@ -40,7 +40,7 @@
             // 
             // loginButton
             // 
-            this.loginButton.Location = new System.Drawing.Point(366, 361);
+            this.loginButton.Location = new System.Drawing.Point(883, 671);
             this.loginButton.Name = "loginButton";
             this.loginButton.Size = new System.Drawing.Size(100, 31);
             this.loginButton.TabIndex = 0;
@@ -50,14 +50,14 @@
             // 
             // usernameTextBox
             // 
-            this.usernameTextBox.Location = new System.Drawing.Point(366, 252);
+            this.usernameTextBox.Location = new System.Drawing.Point(883, 564);
             this.usernameTextBox.Name = "usernameTextBox";
             this.usernameTextBox.Size = new System.Drawing.Size(100, 22);
             this.usernameTextBox.TabIndex = 1;
             // 
             // passwordTextBox
             // 
-            this.passwordTextBox.Location = new System.Drawing.Point(366, 300);
+            this.passwordTextBox.Location = new System.Drawing.Point(883, 622);
             this.passwordTextBox.Name = "passwordTextBox";
             this.passwordTextBox.Size = new System.Drawing.Size(100, 22);
             this.passwordTextBox.TabIndex = 2;
@@ -65,7 +65,7 @@
             // usernameLabel
             // 
             this.usernameLabel.AutoSize = true;
-            this.usernameLabel.Location = new System.Drawing.Point(277, 257);
+            this.usernameLabel.Location = new System.Drawing.Point(783, 569);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.Size = new System.Drawing.Size(77, 17);
             this.usernameLabel.TabIndex = 3;
@@ -74,7 +74,7 @@
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(277, 300);
+            this.passwordLabel.Location = new System.Drawing.Point(783, 622);
             this.passwordLabel.Name = "passwordLabel";
             this.passwordLabel.Size = new System.Drawing.Size(73, 17);
             this.passwordLabel.TabIndex = 4;
@@ -85,9 +85,9 @@
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.Image = global::StockWise.Properties.Resources.myLogo;
-            this.pictureBox1.Location = new System.Drawing.Point(280, 55);
+            this.pictureBox1.Location = new System.Drawing.Point(732, 241);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(226, 179);
+            this.pictureBox1.Size = new System.Drawing.Size(376, 279);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
@@ -95,7 +95,7 @@
             // registerLabel
             // 
             this.registerLabel.AutoSize = true;
-            this.registerLabel.Location = new System.Drawing.Point(363, 406);
+            this.registerLabel.Location = new System.Drawing.Point(880, 729);
             this.registerLabel.Name = "registerLabel";
             this.registerLabel.Size = new System.Drawing.Size(163, 17);
             this.registerLabel.TabIndex = 6;
@@ -108,7 +108,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1211, 621);
             this.Controls.Add(this.registerLabel);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.passwordLabel);
@@ -117,7 +117,9 @@
             this.Controls.Add(this.usernameTextBox);
             this.Controls.Add(this.loginButton);
             this.Name = "LoginPage";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "StockWise";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.LoginPage_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

@@ -14,6 +14,7 @@ namespace StockWise
         {
             InitializeComponent();
             SetupAccordionControl(); // AccordionControl yapılandırması
+            this.WindowState = FormWindowState.Maximized;
         }
 
         private void SetupAccordionControl()
@@ -37,8 +38,8 @@ namespace StockWise
             AddAccordionElement("Stok Yönetimi", "D:\\inventory-management.png", new StockManagementPage());
             AddAccordionElement("Siparişler", "D:\\package-tracking.png", new OrdersPage());
             AddAccordionElement("Satış Analizleri", "D:\\sales.png", new SalesAnalyticsPage());
+            AddAccordionElement("Satın Alım", "C:\\Users\\omere\\Desktop\\shopping-cart_6012938.png", new PurchasePage());
             AddAccordionElement("Geri Bildirimler", "D:\\feedback.png", new FeedbacksPage());
-            AddAccordionElement("Satın Alım", "D:\\sales.png", new PurchasePage());
 
             // AccordionControl formun kontrol listesine ekleniyor
             this.Controls.Add(accordionControl);

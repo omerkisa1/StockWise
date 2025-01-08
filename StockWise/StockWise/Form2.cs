@@ -13,6 +13,7 @@ namespace StockWise
     {
         public RegisterPage()
         {
+            this.WindowState = FormWindowState.Maximized;
             InitializeComponent();
         }
 

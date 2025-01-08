@@ -14,12 +14,15 @@ namespace StockWise
         private DataGridView dataGridViewProducts;
         private Button btnPurchase;
 
+        public FormWindowState WindowState { get; }
+
         public PurchasePage()
         {
             InitializeComponent();
             InitializeDatabaseConnection();
             InitializeControls();
             LoadProducts();
+            this.WindowState = FormWindowState.Maximized;
         }
 
         private void InitializeDatabaseConnection()

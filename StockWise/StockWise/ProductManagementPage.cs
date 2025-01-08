@@ -29,12 +29,15 @@ namespace StockWise
         private GridControl gridControlComparison;
         private GridView gridViewComparison;
 
+        public FormWindowState WindowState { get; }
+
         public ProductManagementPage()
         {
             InitializeComponent();
             InitializeDatabaseConnection();
             InitializeControls();
             LoadStores();
+            this.WindowState = FormWindowState.Maximized;
         }
 
         private void InitializeDatabaseConnection()

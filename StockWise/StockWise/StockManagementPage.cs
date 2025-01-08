@@ -38,6 +38,8 @@ namespace StockWise
         // Listemizdeki kategoriler (DB'den de çekebilirsiniz)
         private List<string> categoryList = new List<string> { "Giyim", "Aksesuar", "Ayakkabı", "Dış Giyim", "Elektronik" };
 
+        public FormWindowState WindowState { get; }
+
         public StockManagementPage()
         {
             InitializeComponent();
@@ -46,6 +48,7 @@ namespace StockWise
             InitializeDataGridView();
 
             this.Load += StockManagementPage_Load;
+            this.WindowState = FormWindowState.Maximized;
         }
 
         private void StockManagementPage_Load(object sender, EventArgs e)

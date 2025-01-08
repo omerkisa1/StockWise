@@ -26,12 +26,15 @@ namespace StockWise
 
         private IMongoCollection<BsonDocument> _savedProductsCollection;
 
+        public FormWindowState WindowState { get; }
+
         public SalesAnalyticsPage()
         {
             InitializeComponent();
             InitializeDatabaseConnection();
             this.Dock = DockStyle.Fill;
             InitializeControls();
+            this.WindowState = FormWindowState.Maximized;
         }
 
         private void InitializeDatabaseConnection()

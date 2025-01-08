@@ -19,12 +19,15 @@ namespace StockWise
         private GridControl gridControlOrders;
         private GridView gridViewOrders;
 
+        public FormWindowState WindowState { get; }
+
         public OrdersPage()
         {
             InitializeComponent();
             InitializeDatabaseConnection();
             InitializeGridControl();
             this.Load += OrdersPage_Load; // Load event bağlanıyor
+            this.WindowState = FormWindowState.Maximized;
         }
 
         private void OrdersPage_Load(object sender, EventArgs e)
