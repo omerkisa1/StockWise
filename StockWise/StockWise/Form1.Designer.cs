@@ -108,7 +108,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(240)))), ((int)(((byte)(250)))));
-            this.ClientSize = new System.Drawing.Size(1211, 621);
+            this.ClientSize = new System.Drawing.Size(1229, 671);
             this.Controls.Add(this.registerLabel);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.passwordLabel);

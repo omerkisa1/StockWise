@@ -19,6 +19,7 @@ namespace StockWise
             this.WindowState = FormWindowState.Maximized;
             InitializeComponent();
             InitializeRegisterLabel();
+            passwordTextBox.PasswordChar = '●';
         }
 
 
