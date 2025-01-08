@@ -316,7 +316,7 @@
     <None Include="Resources\package-tracking.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\product_development.png" />
+    <None Include="Resources\product-development.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\sales.png" />
