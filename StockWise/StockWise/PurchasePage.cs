@@ -14,6 +14,7 @@ namespace StockWise
         private IMongoCollection<BsonDocument> _storeCollection;
         private DataGridView dataGridViewProducts;
         private Button btnPurchase;
+        private Button btnRefresh;
 
         public FormWindowState WindowState { get; }
 
@@ -71,13 +72,29 @@ namespace StockWise
 
             btnPurchase.Click += BtnPurchase_Click;
 
+            // Refresh Button
+            btnRefresh = new Button
+            {
+                Text = "Refresh",
+                Dock = DockStyle.Bottom,
+                Height = 40,
+                BackColor = System.Drawing.Color.DarkGreen,
+                ForeColor = System.Drawing.Color.White,
+                Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold)
+            };
+
+            btnRefresh.Click += BtnRefresh_Click;
+
             // Add controls to the form
             this.Controls.Add(dataGridViewProducts);
             this.Controls.Add(btnPurchase);
+            this.Controls.Add(btnRefresh);
         }
 
         private void LoadProducts()
         {
+            dataGridViewProducts.Rows.Clear();
+
             var products = _savedProductsCollection.Find(new BsonDocument()).ToList();
 
             foreach (var product in products)
@@ -87,6 +104,19 @@ namespace StockWise
                     product.GetValue("price").ToDouble(),
                     1 // Default quantity
                 );
+            }
+        }
+
+        private void BtnRefresh_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LoadProducts();
+                MessageBox.Show("Product list refreshed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while refreshing the product list: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
