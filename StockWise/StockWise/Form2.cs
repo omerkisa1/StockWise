@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Configuration;
 
 namespace StockWise
 {      // main note here : make sure the async working of the db connections
@@ -21,8 +22,11 @@ namespace StockWise
         {
             try
             {
-                var client = new MongoClient("mongodb://localhost:27017");
-                var database = client.GetDatabase("users");
+                string connectionString = ConfigurationManager.AppSettings["MongoDBConnection"];
+                string databaseName = ConfigurationManager.AppSettings["DatabaseName"];
+
+                var client = new MongoClient(connectionString);
+                var database = client.GetDatabase(databaseName);
                 return database.GetCollection<BsonDocument>("userInfos");
             }
             catch (Exception ex)

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Configuration;
 
 namespace StockWise
 {
@@ -39,8 +40,11 @@ namespace StockWise
 
         private void InitializeDatabaseConnection()
         {
-            var client = new MongoClient("mongodb://localhost:27017");
-            var database = client.GetDatabase("users");
+            string connectionString = ConfigurationManager.AppSettings["MongoDBConnection"];
+            string databaseName = ConfigurationManager.AppSettings["DatabaseName"];
+
+            var client = new MongoClient(connectionString);
+            var database = client.GetDatabase(databaseName);
             _savedProductsCollection = database.GetCollection<BsonDocument>("savedProducts");
         }
 
