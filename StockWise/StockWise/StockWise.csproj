@@ -303,5 +303,26 @@
   <ItemGroup>
     <None Include="Resources\myLogo2-Photoroom.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\category.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\feedback.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\inventory-management.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\package-tracking.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\productDevelopment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\sales.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\shopping-cart_6012938.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

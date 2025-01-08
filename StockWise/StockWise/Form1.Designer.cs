@@ -33,8 +33,8 @@
             this.passwordTextBox = new System.Windows.Forms.TextBox();
             this.usernameLabel = new System.Windows.Forms.Label();
             this.passwordLabel = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.registerLabel = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -81,17 +81,6 @@
             this.passwordLabel.Text = "Password:";
             this.passwordLabel.Click += new System.EventHandler(this.label1_Click);
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = global::StockWise.Properties.Resources.myLogo;
-            this.pictureBox1.Location = new System.Drawing.Point(732, 241);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(376, 279);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
-            // 
             // registerLabel
             // 
             this.registerLabel.AutoSize = true;
@@ -102,6 +91,17 @@
             this.registerLabel.Text = "Haven\'t you registered ?";
             this.registerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.registerLabel.Click += new System.EventHandler(this.registerLabel_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::StockWise.Properties.Resources.myLogo;
+            this.pictureBox1.Location = new System.Drawing.Point(732, 241);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(376, 279);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 5;
+            this.pictureBox1.TabStop = false;
             // 
             // LoginPage
             // 

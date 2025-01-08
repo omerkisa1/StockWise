@@ -33,37 +33,34 @@ namespace StockWise
             accordionControl.Appearance.Item.Pressed.BackColor = Color.LightSeaGreen;
 
             // Menü öğeleri oluşturuluyor
-            AddAccordionElement("Ürün Yönetimi", "D:\\product-development.png", new ProductManagementPage());
-            //AddAccordionElement("Kategoriler", "D:\\category.png", new CategoriesPage()); this page deprecated
-            AddAccordionElement("Stok Yönetimi", "D:\\inventory-management.png", new StockManagementPage());
-            AddAccordionElement("Siparişler", "D:\\package-tracking.png", new OrdersPage());
-            AddAccordionElement("Satış Analizleri", "D:\\sales.png", new SalesAnalyticsPage());
-            AddAccordionElement("Satın Alım", "C:\\Users\\omere\\Desktop\\shopping-cart_6012938.png", new PurchasePage());
-            AddAccordionElement("Geri Bildirimler", "D:\\feedback.png", new FeedbacksPage());
+            AddAccordionElement("Ürün Yönetimi", Properties.Resources.productDevelopment, new ProductManagementPage());
+            AddAccordionElement("Stok Yönetimi", Properties.Resources.inventory_management, new StockManagementPage());
+            AddAccordionElement("Siparişler", Properties.Resources.package_tracking, new OrdersPage());
+            AddAccordionElement("Satış Analizleri", Properties.Resources.sales, new SalesAnalyticsPage());
+            AddAccordionElement("Satın Alım", Properties.Resources.shopping_cart_6012938, new PurchasePage());
+            AddAccordionElement("Geri Bildirimler", Properties.Resources.feedback, new FeedbacksPage());
+
 
             // AccordionControl formun kontrol listesine ekleniyor
             this.Controls.Add(accordionControl);
         }
 
-        private void AddAccordionElement(string text, string imagePath, UserControl page)
+        private void AddAccordionElement(string text, Image image, UserControl page)
         {
-            // Tek bir menü öğesi ekleme işlemi
             AccordionControlElement element = new AccordionControlElement
             {
                 Text = text,
                 Style = ElementStyle.Item,
                 ImageOptions =
-                {
-                    Image = ResizeImage(Image.FromFile(imagePath), new Size(24, 24))
-                }
+        {
+            Image = ResizeImage(image, new Size(24, 24))
+        }
             };
 
-            // Menü öğesine tıklama olayı
             element.Click += (s, e) => ChangePageAndHighlight(element, page);
-
-            // AccordionControl öğesine ekleniyor
             accordionControl.Elements.Add(element);
         }
+
 
         private void ChangePageAndHighlight(AccordionControlElement element, UserControl content)
         {
